@@ -224,7 +224,7 @@
                 <label>Počet hráčů:
                     <input type="number" id="num-players" min="2" max="8" value="2">
                 </label>
-                <br>
+                
                 <label>Počet kol:
                     <input type="number" id="num-rounds" min="1" max="20" value="5">
                 </label>
@@ -233,6 +233,12 @@
                     <input type="checkbox" id="display-apples" value="display-apples" checked>
                     Zapnout jablka
                 </label>
+                <div id="apple-settings-wrapper">
+                    <br>                
+                    <label>Frekvence jablek:
+                        <input type="number" id="num-apple-frequency" min="1" max="20" value="5"> sekund
+                    </label>
+                </div>
                 <br><br>
                 <button id="start-button">Start!</button>
                 <br/><small>(nebo Enter)</small>

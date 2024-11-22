@@ -93,6 +93,18 @@ class Game {
             this.resetGame();
         });
 
+        const showHideAppleSettings = ()=>{
+            if(document.getElementById('display-apples').checked){
+                document.getElementById('apple-settings-wrapper').style.display = "";
+            }
+            else{
+                document.getElementById('apple-settings-wrapper').style.display = "none";
+            }
+        };
+
+        document.getElementById('display-apples').addEventListener('change', showHideAppleSettings);
+        showHideAppleSettings();
+
         this.updateControlsTable();
     }
 
@@ -145,12 +157,14 @@ class Game {
         this.numPlayers = parseInt(document.getElementById('num-players').value);
         this.numRounds = parseInt(document.getElementById('num-rounds').value);
         this.displayApples = document.getElementById("display-apples").checked;
+        this.appleDisplayFrequencyInSeconds = parseInt(document.getElementById("num-apple-frequency").value);
         this.currentRound = 0;
         this.scores = new Array(this.numPlayers).fill(0);
         document.getElementById('start-screen').style.display = 'none';
         document.getElementById("scoreboard").style.display = "";
         this.updateControlsTable(); // Update the controls table to match the actual number of players
         this.startRound();
+        console.log(this)
     }
 
     startRound() {
@@ -247,35 +261,17 @@ class Game {
 
     checkAppleCollision(snake) {        
         this.apples.forEach(apple => {
-            if (collisionHelper.isPointInsideCircle(snake.x, snake.y, apple.x, apple.y, apple.radius + this.lineWidth / 2)) {
-                // Collision detected
+            if (collisionHelper.isPointInsideCircle(snake.x, snake.y, apple.x, apple.y, apple.radius + 1)) {                
                 console.log(`Snake ${snake.player.id} collected an apple at (${apple.x}, ${apple.y})`);                
-                apple.isEaten = true;
-                this.scores[snake.player.id]++; // Increment snake's score
+                apple.collect();
+                this.scores[snake.player.id] += apple.pointValue; // Increment snake's score
                 this.updateScoreboard(); // Update scoreboard
-
-                // Optionally, play a sound or give visual feedback
-                this.playAppleCollectionSound();
             }
         });
 
         this.eatenApples = [...this.eatenApples, ...this.apples.filter(a => a.isEaten)];
         this.apples = this.apples.filter(a => !a.isEaten);
     }    
-    
-    playAppleCollectionSound() {
-        if (!this.audioCtx) {
-            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        // Load and play the music file
-        this.biteAudio = new Audio('bite.mp3');
-        this.biteAudio.loop = false;
-        this.biteAudio.volume = .075;        
-        this.biteAudio.currentTime = .03;
-        this.biteAudio.play().catch((error) => {
-            console.error('Error playing music:', error);
-        });
-    }
 
     generateApple() {
         if (!this.displayApples) return;
