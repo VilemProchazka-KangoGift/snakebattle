@@ -68,21 +68,24 @@ class Game {
 
         // Start game on Enter key press
         window.addEventListener('keydown', (e) => {
-            if (e.code === 'Enter' && document.getElementById('start-screen').style.display !== 'none') {
+            // Check for both Enter and NumpadEnter
+            if ((e.code === 'Enter' || e.code === 'NumpadEnter') && document.getElementById('start-screen').style.display !== 'none') {
                 this.startGame();
-            }
-            else if (e.code === 'Enter' && document.getElementById('winning-screen').style.display !== 'none') {
+            } else if ((e.code === 'Enter' || e.code === 'NumpadEnter') && document.getElementById('winning-screen').style.display !== 'none') {
                 this.resetGame();
             }
             
-            if(e.code === 'Escape' && document.getElementById('winning-screen').style.display !== 'none'){
+            // Escape key handling
+            if (e.code === 'Escape' && document.getElementById('winning-screen').style.display !== 'none') {
                 this.resetGame();
-            }
-            else if (e.code === 'Escape' && document.getElementById('start-screen').style.display === 'none') {
+            } else if (e.code === 'Escape' && document.getElementById('start-screen').style.display === 'none') {
                 this.endGame();
             }
+            
+            // Log the key as pressed
             this.keysPressed[e.code] = true;
         });
+        
         window.addEventListener('keyup', (e) => {
             this.keysPressed[e.code] = false;
         });
