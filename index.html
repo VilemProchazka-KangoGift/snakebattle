@@ -18,16 +18,21 @@
         }
         #gameContainer {
             position: relative;
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: flex-start;
+            width: 100%;
+           
             margin-top: 20px;
+            text-align: center; /* Center inline-block children */
+            /* Removed Flexbox properties */
         }
+
+
         #gameCanvas {
+            display: inline-block; /* Allows inline positioning */
+            vertical-align: top; /* Aligns the top of the scoreboard with the canvas */
             background: rgba(0, 0, 0, 0.95);
             border: 5px solid #fff;
         }
+
         /* Center the UI (start screen) */
         #ui {
             text-align: center;
@@ -79,15 +84,39 @@
             font-size: 30px;
         }
         #scoreboard {
-            margin-left: 20px;
+            display: inline-block; /* Places it next to the canvas */
+            vertical-align: top; /* Aligns with the top of the canvas */
             background-color: rgba(0, 0, 0, 0.95);
             padding: 10px;
             border-radius: 5px;
             color: #fff;
             width: 200px;
             text-align: left;  
-            font-size: 18px;      
+            font-size: 18px;
+            margin-left: 20px; /* Space between canvas and scoreboard */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
+
+        @media (max-width: 800px) {
+            #scoreboard {
+                width: 150px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #scoreboard {
+                position: static; /* Stacks below the canvas on smaller screens */
+                margin: 10px auto;
+                width: 80%;
+            }
+
+            #gameCanvas {
+                width: 100%;
+                height: auto;
+            }
+        }
+
 
         #scoreboard > div{
             margin-top: 15px;
@@ -148,10 +177,8 @@
             margin-top: 5px;
         }
         /* Winning Screen Styles */
-        #winning-screen {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        #winning-screen {            
+            padding: 15px;
             background-color: rgba(0, 0, 0, 0.8);
             max-width: 430px;
         }

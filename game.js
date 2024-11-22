@@ -64,7 +64,11 @@ class Game {
             else if (e.code === 'Enter' && document.getElementById('winning-screen').style.display !== 'none') {
                 this.resetGame();
             }
-            if (e.code === 'Escape' && document.getElementById('start-screen').style.display === 'none') {
+            
+            if(e.code === 'Escape' && document.getElementById('winning-screen').style.display !== 'none'){
+                this.resetGame();
+            }
+            else if (e.code === 'Escape' && document.getElementById('start-screen').style.display === 'none') {
                 this.endGame();
             }
             this.keysPressed[e.code] = true;
@@ -349,13 +353,13 @@ class Game {
         }
         
         // Update the winning title
-        let winningTitle = '';
+        let winningTitle = '&#x1F451;<br/>';
         if (winners.length === 1) {
-            winningTitle = `Hráč ${winners[0]} vyhrál!`;
+            winningTitle += `Hráč ${winners[0]} vyhrál!`;
         } else {
-            winningTitle = `Hráči ${winners.join(', ')} všichni vyhráli!`;
+            winningTitle += `Hráči ${winners.join(', ')} všichni vyhráli!`;
         }
-        document.getElementById('winning-title').textContent = winningTitle;
+        document.getElementById('winning-title').innerHTML = winningTitle;
         
         // Create a sorted list of players by score descending
         let playerScores = [];
