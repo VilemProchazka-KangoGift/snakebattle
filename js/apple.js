@@ -1,5 +1,6 @@
 class Apple {
-    constructor(x, y, radius, specialAppleProbability) {        
+    constructor(x, y, radius, specialAppleProbability) {   
+        this.id = Math.random();     
         this.x = x;
         this.y = y;
         this.radius = radius;        
@@ -28,17 +29,45 @@ class Apple {
         ctx.restore();
     }
     
-    collect(){
+    collect(game){
         this.isEaten = true;
         this.playAppleCollectionSound();
-
+        
         if(this.isSpecialApple){
-            document.getElementById("gameCanvas").classList.add("animated-background");
-            setTimeout(()=>{
-                document.getElementById("gameCanvas").classList.remove("animated-background");
-            }, 10000)            
+            this.shuffleArray([
+                this.startHallucinogenicBackground, 
+                ()=>this.shufflePlayers(game)
+            ])[0]();
         }
     }
+
+    shufflePlayers(game){
+        const players = game.aliveSnakes.map(s=>s.player);
+        const playersShuffled = this.shuffleArray(players);
+        game.aliveSnakes.forEach((s, i)=>s.player = playersShuffled[i]);
+        game.gameFrozen = true;
+        setTimeout(()=>game.gameFrozen = false, 1500);
+    }
+
+    startHallucinogenicBackground(){
+        document.getElementById("gameCanvas").classList.add("animated-background");
+            document.getElementById("gameCanvas").dataset.lastAppleId = this.id;
+            setTimeout(()=>{
+                if(document.getElementById("gameCanvas").dataset.lastAppleId == this.id){
+                    document.getElementById("gameCanvas").classList.remove("animated-background");
+                }
+            }, 10000)      
+    }
+
+    shuffleArray = arr => {
+        const newArr = arr.slice()
+        for (let i = newArr.length - 1; i > 0; i--) {
+            const rand = Math.floor(Math.random() * (i + 1));
+            [newArr[i], newArr[rand]] = [newArr[rand], newArr[i]];
+        }
+        return newArr
+    };
+
 
     playAppleCollectionSound() {
         if (!this.audioCtx) {

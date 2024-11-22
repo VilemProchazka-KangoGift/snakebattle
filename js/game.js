@@ -35,6 +35,7 @@ class Game {
         this.gameTickInterval = null;        
         this.audioCtx = null;
         this.keysPressed = {};
+        this.gameFrozen = false;
 
         // New variable to track game speed
         this.gameSpeed = 0;
@@ -206,12 +207,17 @@ class Game {
             this.snakes[i] = snake;
             this.aliveSnakes.push(snake);
         }
+        this.gameFrozen = false;
         this.updateScoreboard();
         this.gameTickInterval = setInterval(() => this.gameTick(), 1000 / 60);
         this.playMusic();
     }
 
     gameTick() {
+        if(this.gameFrozen){
+            return;
+        }
+
         // Draw apples
         for (let apple of this.eatenApples) {
             apple.remove(this.ctx);            
@@ -265,7 +271,7 @@ class Game {
         this.apples.forEach(apple => {
             if (collisionHelper.isPointInsideCircle(snake.x, snake.y, apple.x, apple.y, apple.radius + 1)) {                
                 console.log(`Snake ${snake.player.id} collected an apple at (${apple.x}, ${apple.y})`);                
-                apple.collect();
+                apple.collect(this);
                 this.scores[snake.player.id] += apple.pointValue; // Increment snake's score
                 this.updateScoreboard(); // Update scoreboard
             }
@@ -449,7 +455,7 @@ class Game {
 
     endGame() {
         clearInterval(this.gameTickInterval);
-        
+        this.stopAppleTimer();
         this.updateScoreboard();
 
         if (this.musicAudio) {

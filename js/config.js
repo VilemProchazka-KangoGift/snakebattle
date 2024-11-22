@@ -24,6 +24,6 @@ const GameConfig = {
     initialMusicPlaybackRate: 0.85, // Starting playback rate for the music
     displayApples: true,
     appleDisplayFrequencyInSeconds: 10,
-    appleRadius : 7,
-    specialAppleProbability : 0.3
+    appleRadius : 6,
+    specialAppleProbability : .2
 };
