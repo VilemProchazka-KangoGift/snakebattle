@@ -23,6 +23,7 @@ const GameConfig = {
     musicFile: 'music.mp3', // Music file (converted from music.mid)
     initialMusicPlaybackRate: 0.85, // Starting playback rate for the music
     displayApples: true,
+    displayGoldenApples: true,
     appleDisplayFrequencyInSeconds: 10,
     appleRadius : 6,
     specialAppleProbability : .2

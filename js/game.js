@@ -19,6 +19,7 @@ class Game {
         this.initialMusicPlaybackRate = GameConfig.initialMusicPlaybackRate;
         this.boostSpeed = GameConfig.boostSpeed;
         this.displayApples = GameConfig.displayApples;
+        this.displayGoldenApples = GameConfig.displayGoldenApples;
         this.appleDisplayFrequencyInSeconds = GameConfig.appleDisplayFrequencyInSeconds;        
         this.appleRadius = GameConfig.appleRadius;
         this.specialAppleProbability = GameConfig.specialAppleProbability;
@@ -97,10 +98,10 @@ class Game {
 
         const showHideAppleSettings = ()=>{
             if(document.getElementById('display-apples').checked){
-                document.getElementById('apple-settings-wrapper').style.display = "";
+                [...document.getElementsByClassName('apple-settings-wrapper')].forEach(e=>e.style.display = "");
             }
             else{
-                document.getElementById('apple-settings-wrapper').style.display = "none";
+                [...document.getElementsByClassName('apple-settings-wrapper')].forEach(e=>e.style.display = "none");
             }
         };
 
@@ -159,6 +160,7 @@ class Game {
         this.numPlayers = parseInt(document.getElementById('num-players').value);
         this.numRounds = parseInt(document.getElementById('num-rounds').value);
         this.displayApples = document.getElementById("display-apples").checked;
+        this.displayGoldenApples = document.getElementById("display-golden-apples").checked;
         this.appleDisplayFrequencyInSeconds = parseInt(document.getElementById("num-apple-frequency").value);
         this.currentRound = 0;
         this.scores = new Array(this.numPlayers).fill(0);
@@ -318,7 +320,7 @@ class Game {
         }
 
         if (validPosition) {
-            const newApple = new Apple(x, y, this.appleRadius, this.specialAppleProbability);
+            const newApple = new Apple(x, y, this.appleRadius, this.displayGoldenApples ? this.specialAppleProbability : 0);
             this.apples.push(newApple);
             console.log(`Apple added at (${x}, ${y})`);
         } else {

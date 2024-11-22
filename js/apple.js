@@ -8,7 +8,7 @@ class Apple {
         this.isEaten = false;        
         this.biteAudio = null;
 
-        this.isSpecialApple = Math.random() <= specialAppleProbability;
+        this.isSpecialApple = specialAppleProbability > 0 && Math.random() <= specialAppleProbability;
         this.color = this.isSpecialApple ? 'gold' : 'red';
         this.pointValue = this.isSpecialApple ? 3 : 1;
     }

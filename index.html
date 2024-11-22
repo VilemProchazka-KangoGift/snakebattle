@@ -261,10 +261,15 @@
                     <input type="checkbox" id="display-apples" value="display-apples" checked>
                     Zapnout jablka
                 </label>
-                <div id="apple-settings-wrapper">
+                <div class="apple-settings-wrapper">
                     <br>                
                     <label>Frekvence jablek:
                         <input type="number" id="num-apple-frequency" min="1" max="20" value="5"> sekund
+                    </label>
+                    <br>
+                    <label>
+                    <input type="checkbox" id="display-golden-apples" value="display-golden-apples" checked>
+                    Zapnout zlatá jablka
                     </label>
                 </div>
                 <br><br>
@@ -289,12 +294,18 @@
     <!-- Controls table centered under the game area -->
     <div id="rules">
         <h3>Pravidla</h3>
-        Tlačítka ovládají vašeho hada doprava/doleva. Nevražte do zdi ani ostatních hadů. Obě tlačítka najednou = zrychlení.
+        Tlačítka ovládají vašeho hada doprava/doleva. Nevražte do zdi ani ostatních hadů. Obě tlačítka najednou = zrychlení.        
         <ul>
             <li>Po smrti hada dostanou všichni živí hadi +1 bod</li>
             <li>Po nárazu do jiného živého hada získá živý had +1 bod</li>
             <li>Poslední živý had dostane +1 bod</li>
         </ul>
+        <div class="apple-settings-wrapper">
+            <ul>
+                <li><span style="color:red">Červené</span> jablko +1 bod</li>
+                <li><span style="color:gold">Zlaté</span> jablko +3 body. Pozor! Nastane ale náhodná komplikace...</li>
+            </ul>
+        </div>
     </div>
     <div id="controls-table"></div>
     <!-- Add the blink overlay -->
