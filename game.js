@@ -50,6 +50,8 @@ class Game {
             document.body.style.backgroundImage = `url('${this.backgroundImage}')`;
         }
 
+        document.getElementById("scoreboard").style.display = "none";
+
         document.getElementById('start-button').addEventListener('click', () => {
             this.startGame();
         });
@@ -58,6 +60,9 @@ class Game {
         window.addEventListener('keydown', (e) => {
             if (e.code === 'Enter' && document.getElementById('start-screen').style.display !== 'none') {
                 this.startGame();
+            }
+            else if (e.code === 'Enter' && document.getElementById('winning-screen').style.display !== 'none') {
+                this.resetGame();
             }
             if (e.code === 'Escape' && document.getElementById('start-screen').style.display === 'none') {
                 this.endGame();
@@ -73,7 +78,26 @@ class Game {
             this.updateControlsTable();
         });
 
+        document.getElementById('restart-button').addEventListener('click', () => {
+            this.resetGame();
+        });
+
         this.updateControlsTable();
+    }
+
+    resetGame() {
+        // Hide the winning screen
+        document.getElementById('winning-screen').style.display = 'none';
+        
+        // Reset scores and rounds
+        this.currentRound = 0;
+        this.scores = new Array(this.numPlayers).fill(0);
+        
+        // Update scoreboard
+        this.updateScoreboard();
+        
+        // Show the start screen
+        document.getElementById('start-screen').style.display = 'block';
     }
 
     updateControlsTable() {
@@ -112,6 +136,7 @@ class Game {
         this.currentRound = 0;
         this.scores = new Array(this.numPlayers).fill(0);
         document.getElementById('start-screen').style.display = 'none';
+        document.getElementById("scoreboard").style.display = "";
         this.updateControlsTable(); // Update the controls table to match the actual number of players
         this.startRound();
     }
@@ -298,6 +323,8 @@ class Game {
         this.keysPressed = {};
     }   
 
+    // Inside the Game class
+
     endGame() {
         clearInterval(this.gameTickInterval);
         
@@ -311,22 +338,67 @@ class Game {
             this.audioCtx.close();
             this.audioCtx = null;
         }
+        
+        // Determine the winner(s)
         let maxScore = Math.max(...this.scores);
         let winners = [];
         for (let i = 0; i < this.scores.length; i++) {
             if (this.scores[i] === maxScore) {
-                winners.push(i + 1);
+                winners.push(i + 1); // Player numbers are 1-based
             }
         }
-        alert('Konec hry! Zvítězil hráč ' + winners.join(', '));
-        document.getElementById('start-screen').style.display = 'block';
-        document.getElementById('scoreboard').innerHTML = '';
+        
+        // Update the winning title
+        let winningTitle = '';
+        if (winners.length === 1) {
+            winningTitle = `Hráč ${winners[0]} vyhrál!`;
+        } else {
+            winningTitle = `Hráči ${winners.join(', ')} všichni vyhráli!`;
+        }
+        document.getElementById('winning-title').textContent = winningTitle;
+        
+        // Create a sorted list of players by score descending
+        let playerScores = [];
+        for (let i = 0; i < this.numPlayers; i++) {
+            playerScores.push({ player: i + 1, score: this.scores[i], color: this.players[i].color });
+        }
+        playerScores.sort((a, b) => b.score - a.score);
+        
+        // Populate the player scores list
+        const playerScoresList = document.getElementById('player-scores');
+        playerScoresList.innerHTML = ''; // Clear any existing entries
+        playerScores.forEach(p => {
+            let li = document.createElement('li');
+            let suffix = ''
+            switch(p.score){
+                case 1:
+                    suffix = '';
+                case 2:
+                case 3:
+                case 4:
+                    suffix = 'y';
+                    break;
+                case 0:
+                default:
+                    suffix = "ů"
+                    break;
+            }
+            li.innerHTML = `<span style="color:${p.color};">Hráč ${p.player}</span>: ${p.score} bod${suffix}`;
+            playerScoresList.appendChild(li);
+        });
+        
+        // Hide other UI elements if necessary
+        document.getElementById('winning-screen').style.display = '';
+        document.getElementById('start-screen').style.display = 'none';                
+        document.getElementById('scoreboard').style.display = 'none';
+        
         // Reset game speed and music speed display
         const gameSpeedDiv = document.getElementById('game-speed');
         gameSpeedDiv.textContent = 'Rychlost: 0';
         const musicSpeedDiv = document.getElementById('music-speed');
         musicSpeedDiv.textContent = 'Rychlost hudby: 0';
     }
+
 
     playMusic() {
         // Load and play the music file

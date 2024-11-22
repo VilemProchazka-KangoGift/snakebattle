@@ -8,6 +8,7 @@ class Game {
 
         // Configuration Variables from config.js
         this.colors = GameConfig.colors;
+        this.colorsAsHex = GameConfig.colorsAsHex;
         this.controlsList = GameConfig.controlsList;
         this.initialSnakeSpeed = GameConfig.initialSnakeSpeed;
         this.snakeSpeedIncrement = GameConfig.snakeSpeedIncrement;
@@ -130,8 +131,9 @@ class Game {
         // Initialize players and snakes
         for (let i = 0; i < this.numPlayers; i++) {
             let color = this.colors[i % this.colors.length];
+            let colorAsHex = this.colorsAsHex[i % this.colors.length];
             let control = this.controlsList[i % this.controlsList.length];
-            let player = new Player(i, color, control);
+            let player = new Player(i, color, colorAsHex, control);
             this.players[i] = player;
             let snake = new Snake(
                 this,
@@ -249,12 +251,16 @@ class Game {
 
     updateScoreboard() {
         let scoreboard = document.getElementById('scoreboard');
+        const maxScore = Math.max(...this.scores);
         scoreboard.innerHTML = '<h3>Skóre</h3>';
+        scoreboard.innerHTML += `<div>Kolo: <b>${this.currentRound + 1}</b>/${this.numRounds}</div>`;
         for (let i = 0; i < this.numPlayers; i++) {
             let controls = this.players[i].controls;
             let leftKey = this.getKeyName(controls.left);
             let rightKey = this.getKeyName(controls.right);
-            scoreboard.innerHTML += `<div style="color:${this.players[i].color}">Hráč ${i + 1}: <b>${this.scores[i]}</b><br><small>${leftKey} / ${rightKey}</small></div>`;
+            const isTopPlayer = maxScore > 0 && this.scores[i] === maxScore;
+            const topPlayerBadge = isTopPlayer ? "&#x1F451;" : "";
+            scoreboard.innerHTML += `<div style="color:${this.players[i].color}">${topPlayerBadge}Hráč ${i + 1}: <b>${this.scores[i]}</b><br><small>${leftKey} / ${rightKey}</small></div>`;
         }
     }
 
@@ -332,12 +338,83 @@ class Game {
             console.error('Error playing music:', error);
         });
     }
+
+    shadeColor(color, percent) {
+        // Ensure percent is a decimal between -1 and 1
+        if (percent > 1) percent = 1;
+        if (percent < -1) percent = -1;
+    
+        // Expand shorthand form (e.g. "03F") to full form ("0033FF")
+        let fullColor = color.length === 4
+            ? `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`
+            : color;
+    
+        // Convert hex to RGB
+        let R = parseInt(fullColor.substring(1, 3), 16);
+        let G = parseInt(fullColor.substring(3, 5), 16);
+        let B = parseInt(fullColor.substring(5, 7), 16);
+    
+        // Calculate new color components
+        R = Math.round(R + (percent < 0 ? R * percent : (255 - R) * percent));
+        G = Math.round(G + (percent < 0 ? G * percent : (255 - G) * percent));
+        B = Math.round(B + (percent < 0 ? B * percent : (255 - B) * percent));
+    
+        // Clamp values to [0, 255]
+        R = Math.min(255, Math.max(0, R));
+        G = Math.min(255, Math.max(0, G));
+        B = Math.min(255, Math.max(0, B));
+    
+        // Convert back to hex and ensure two digits
+        const newColor = "#" + 
+            ("0" + R.toString(16)).slice(-2) + 
+            ("0" + G.toString(16)).slice(-2) + 
+            ("0" + B.toString(16)).slice(-2);
+    
+        return newColor;
+    }   
+
+    createScalePattern(colorAsHex) {
+        const patternCanvas = document.createElement('canvas');
+        const size = 40; // Adjust size for scale size
+        patternCanvas.width = size;
+        patternCanvas.height = size;
+        const pctx = patternCanvas.getContext('2d');
+    
+        // Use shades of the snake's color
+        const darkerColor = this.shadeColor(colorAsHex, -0.3); // Darken by 20%
+        const lighterColor = colorAsHex;// this.shadeColor(color, 0.2); // Lighten by 20%
+    
+        // Fill background with the darker shade
+        pctx.fillStyle = lighterColor;
+        pctx.fillRect(0, 0, size, size);
+    
+        // Draw scales using the lighter shade
+        pctx.fillStyle = darkerColor;
+    
+        const scaleSize = size / 5; // Adjust scale size
+        const scaleGap = scaleSize / 3;
+    
+        // Draw overlapping scales with pointed tips
+        for (let y = scaleGap; y < size; y += scaleSize + scaleGap) {
+            for (let x = scaleGap; x < size; x += scaleSize + scaleGap) {
+                pctx.beginPath();
+                pctx.moveTo(x, y);
+                pctx.lineTo(x + scaleSize, y + scaleSize / 2);
+                pctx.lineTo(x, y + scaleSize);
+                pctx.closePath();
+                pctx.fill();
+            }
+        }
+    
+        return pctx.createPattern(patternCanvas, 'repeat');
+    }
 }
 
 class Player {
-    constructor(id, color, controls) {
+    constructor(id, color, colorAsHex, controls) {
         this.id = id;
         this.color = color;
+        this.colorAsHex = colorAsHex;
         this.controls = controls;
         this.leftKey = controls.left;
         this.rightKey = controls.right;
@@ -350,7 +427,9 @@ class Snake {
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
         this.alive = true;
-
+        
+        this.scalePattern = this.game.createScalePattern(this.player.colorAsHex);
+        
         // Initialize segments and previous position
         this.segments = [];
         this.x = canvasWidth / 2 + (Math.random() - 0.5) * 100;
@@ -456,7 +535,7 @@ class Snake {
                 if (this.intersectsWithSegments(currentSegment, snake.segments)) {
                     console.log(`Snake ${this.player.id} collided with snake ${snake.player.id}.`);
 
-                    if(this.game.players.length > 2 && snake.alive){
+                    if(snake.alive){
                         this.game.scores[snake.player.id]++;
                         this.game.updateScoreboard();
                         console.log("Bonus points from to", this.player, snake.player)
@@ -498,42 +577,78 @@ class Snake {
         const radiusSquared = r * r;
         return distanceSquared <= radiusSquared;
     }
-    
 
     draw(ctx) {
-        ctx.lineWidth = this.lineWidth;
+        if (this.segments.length === 0) return;
+    
+        // Extract all points from segments
+        const points = this.segments.map(segment => ({ x: segment.x2, y: segment.y2 }));
+    
+        // Ensure there's at least two points to draw a line
+        if (points.length < 2) return;
+    
+        // Set common properties
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-
-        // Draw all segments except the last one
-        if (this.segments.length > 1) {
-            ctx.strokeStyle = this.player.color;            
-            ctx.beginPath();
-            ctx.moveTo(this.segments[0].x1, this.segments[0].y1);
-            for (let i = 0; i < this.segments.length - 1; i++) {                
-                let segment = this.segments[i];
-                ctx.lineTo(segment.x2, segment.y2);
-            }
-            ctx.stroke();            
+    
+        // === 1. Draw the White Outline for the Entire Snake ===
+        ctx.lineWidth = this.lineWidth + 1; // Adjust outline thickness as needed
+        ctx.strokeStyle = this.game.shadeColor(this.player.colorAsHex, 0.1);;
+        ctx.beginPath();
+    
+        // Move to the first point
+        ctx.moveTo(this.segments[0].x1, this.segments[0].y1);
+    
+        // Iterate through points and draw quadratic curves
+        for (let i = 0; i < points.length - 1; i++) {
+            const currentPoint = points[i];
+            const nextPoint = points[i + 1];
+    
+            // Calculate the midpoint between current and next points
+            const midPoint = {
+                x: (currentPoint.x + nextPoint.x) / 2,
+                y: (currentPoint.y + nextPoint.y) / 2
+            };
+    
+            // Draw a quadratic curve to the midpoint
+            ctx.quadraticCurveTo(currentPoint.x, currentPoint.y, midPoint.x, midPoint.y);
         }
-
-        ctx.filter = null;
-
-        // Draw the last segment (the head) in white
-        if (this.segments.length > 0) {
-            ctx.strokeStyle = 'white';            
-            ctx.beginPath();
-            let lastSegment = this.segments[this.segments.length - 1];
-            ctx.moveTo(lastSegment.x1, lastSegment.y1);
-            ctx.lineTo(lastSegment.x2, lastSegment.y2);
-            ctx.stroke();
-
-            // Optionally, draw a circle at the head position
-            ctx.fillStyle = 'white';
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.lineWidth / 2, 0, 2 * Math.PI);
-            ctx.fill();
+    
+        // For the last segment, draw a straight line to the last point
+        ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+    
+        ctx.stroke();
+    
+        // === 2. Draw the Main Snake Line on Top of the Outline ===
+        ctx.lineWidth = this.lineWidth;
+        ctx.strokeStyle = this.player.colorAsHex;// this.scalePattern;
+        ctx.beginPath();
+    
+        ctx.moveTo(this.segments[0].x1, this.segments[0].y1);
+    
+        for (let i = 0; i < points.length - 1; i++) {
+            const currentPoint = points[i];
+            const nextPoint = points[i + 1];
+    
+            const midPoint = {
+                x: (currentPoint.x + nextPoint.x) / 2,
+                y: (currentPoint.y + nextPoint.y) / 2
+            };
+    
+            ctx.quadraticCurveTo(currentPoint.x, currentPoint.y, midPoint.x, midPoint.y);
         }
+    
+        ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+    
+        ctx.stroke();
+    
+        // === 3. Draw the Enlarged Head ===
+        // Draw a larger white circle at the head position
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        const headRadius = this.lineWidth * 1; // Double the original size
+        ctx.arc(this.x, this.y, headRadius, 0, 2 * Math.PI);
+        ctx.fill();          
     }
 }
 

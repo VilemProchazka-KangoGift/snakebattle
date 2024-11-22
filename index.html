@@ -47,8 +47,7 @@
             font-size: 20px;
         }
 
-        #start-screen {
-            left: -116px;
+        #start-screen {            
             position: relative;
             font-family: system-ui;
         }
@@ -111,8 +110,7 @@
             top: 20px;            
             width: 560px;
             margin: 0 auto;
-            position: relative;
-            left: -120px;
+            position: relative;            
             margin: 0 auto; /* Center the table */
         }
         #controls-table table {
@@ -149,6 +147,45 @@
             font-size: 14px;
             margin-top: 5px;
         }
+        /* Winning Screen Styles */
+        #winning-screen {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            max-width: 430px;
+        }
+
+        #winning-screen h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        #player-scores {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+
+        #player-scores li {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        #restart-button {
+            padding: 10px 30px;
+            font-size: 20px;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #restart-button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>    
@@ -168,6 +205,14 @@
                 <button id="start-button">Start!</button>
                 <br/><small>(nebo Enter)</small>
             </div>
+            <div id="winning-screen" style="display: none;">
+                <h1 id="winning-title">Player X Wins!</h1>
+                <ul id="player-scores">
+                    <!-- Player scores will be dynamically populated here -->
+                </ul>
+                <button id="restart-button">Play Again</button>
+            </div>
+
         </div>
         <canvas id="gameCanvas" width="600" height="600"></canvas>
         <div id="scoreboard">

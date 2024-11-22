@@ -115,3 +115,12 @@ winning screen
 draw head
 
 front hit - kill both
+
+
+
+
+Add a winning screen after game ends.  
+
+The title will be "Player X Wins!"
+
+Then show a list of players ordered by points descending.
