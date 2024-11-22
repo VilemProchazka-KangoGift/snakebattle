@@ -170,6 +170,7 @@ class Game {
 
     startRound() {
         // Clear the canvas and fill it with the background color
+        document.getElementById("gameCanvas").classList.remove("animated-background");
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         console.log('Canvas cleared.');
 
@@ -486,6 +487,7 @@ class Game {
         playerScores.sort((a, b) => b.score - a.score);
         
         // Populate the player scores list
+        document.getElementById("gameCanvas").classList.remove("animated-background");
         const playerScoresList = document.getElementById('player-scores');
         playerScoresList.innerHTML = ''; // Clear any existing entries
         playerScores.forEach(p => {

@@ -213,6 +213,34 @@
         #restart-button:hover {
             background-color: #218838;
         }
+
+        #gameCanvas.animated-background {
+            
+            background: linear-gradient(65deg, #FF0000 12%, #008000 25%, #0000FF 36%, #FFFF00 48%, #800080 60%, #00FFFF 72%, #FFA500 85%, #FFC0CB 100%);
+            background-size: 800% 800%;
+            animation: gradientAnimation 5s ease-in-out forwards infinite;
+        }
+
+        /* Define the keyframes for the gradient animation */
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            25% {
+                background-position: 50% 75%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            50% {
+                background-position: 50% 25%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+       
     </style>
 </head>
 <body>    

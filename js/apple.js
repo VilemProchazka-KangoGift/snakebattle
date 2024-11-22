@@ -31,6 +31,13 @@ class Apple {
     collect(){
         this.isEaten = true;
         this.playAppleCollectionSound();
+
+        if(this.isSpecialApple){
+            document.getElementById("gameCanvas").classList.add("animated-background");
+            setTimeout(()=>{
+                document.getElementById("gameCanvas").classList.remove("animated-background");
+            }, 10000)            
+        }
     }
 
     playAppleCollectionSound() {
