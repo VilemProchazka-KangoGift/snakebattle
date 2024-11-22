@@ -124,3 +124,19 @@ Add a winning screen after game ends.
 The title will be "Player X Wins!"
 
 Then show a list of players ordered by points descending.
+
+
+
+
+Add a new feature:
+
+Every X seconds, an apple (red circle) is added on the canvas.
+
+It needs to be added on an empty space so that there are no collisions. Use the existing isPointInsideCircle logic.
+
+When a snake collides with it, the apple disappears and the snake gets 1 point.
+
+Add the number of seconds into config.js and also add a bool ShowApples to the config.js that will turn the apple feature on and off.
+
+I also made some small changes to the file meanwhile. Here's the latest version:
+
