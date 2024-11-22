@@ -21,5 +21,9 @@ const GameConfig = {
     backgroundImage: 'background.png', // Background image file name
     melodyVolume: 0.1, // Volume for the background melody
     musicFile: 'music.mp3', // Music file (converted from music.mid)
-    initialMusicPlaybackRate: 0.85 // Starting playback rate for the music
+    initialMusicPlaybackRate: 0.85, // Starting playback rate for the music
+    displayApples: true,
+    appleDisplayFrequencyInSeconds: 10,
+    appleRadius : 7
+
 };

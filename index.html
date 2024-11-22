@@ -228,6 +228,11 @@
                 <label>Počet kol:
                     <input type="number" id="num-rounds" min="1" max="20" value="5">
                 </label>
+                <br>
+                <label>
+                    <input type="checkbox" id="display-apples" value="display-apples" checked>
+                    Zapnout jablka
+                </label>
                 <br><br>
                 <button id="start-button">Start!</button>
                 <br/><small>(nebo Enter)</small>
@@ -266,8 +271,10 @@
     </div>
     <!-- Include the configuration script before the game script -->
     <script src="./js/config.js"></script>
+    <script src="./js/collision.js"></script>
     <script src="./js/player.js"></script>
     <script src="./js/snake.js"></script>
+    <script src="./js/apple.js"></script>
     <script src="./js/game.js"></script>
 </body>
 </html>

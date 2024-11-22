@@ -18,8 +18,12 @@ class Game {
         this.musicFile = GameConfig.musicFile;
         this.initialMusicPlaybackRate = GameConfig.initialMusicPlaybackRate;
         this.boostSpeed = GameConfig.boostSpeed;
+        this.displayApples = GameConfig.displayApples;
+        this.appleDisplayFrequencyInSeconds = GameConfig.appleDisplayFrequencyInSeconds;        
+        this.appleRadius = GameConfig.appleRadius;
 
         // Game State Variables
+        this.appleTimer = null;
         this.players = [];
         this.snakes = [];
         this.aliveSnakes = [];
@@ -36,6 +40,9 @@ class Game {
 
         // Audio element for music playback
         this.musicAudio = null;
+
+        // Audio element for bite sound
+        this.biteAudio = null;
 
         // Background color as RGBA
         this.backgroundColor = { r: 0, g: 0, b: 0, a: 0 }; // Solid black
@@ -137,6 +144,7 @@ class Game {
     startGame() {
         this.numPlayers = parseInt(document.getElementById('num-players').value);
         this.numRounds = parseInt(document.getElementById('num-rounds').value);
+        this.displayApples = document.getElementById("display-apples").checked;
         this.currentRound = 0;
         this.scores = new Array(this.numPlayers).fill(0);
         document.getElementById('start-screen').style.display = 'none';
@@ -155,7 +163,11 @@ class Game {
         console.log('Canvas background filled with color:', this.ctx.fillStyle);
 
         this.snakes = [];
-        this.aliveSnakes = [];        
+        this.aliveSnakes = [];   
+        
+        this.apples = []; // Reset apples for the new round        
+        this.eatenApples = [];
+        this.startAppleTimer(); // Start apple generation timer
 
         // Initialize players and snakes
         for (let i = 0; i < this.numPlayers; i++) {
@@ -184,10 +196,22 @@ class Game {
     }
 
     gameTick() {
+        // Draw apples
+        for (let apple of this.eatenApples) {
+            apple.remove(this.ctx);            
+        }
+        this.eatenApples = [];
+
+        for (let apple of this.apples) {
+            apple.draw(this.ctx);            
+        }       
+
         for (let snake of this.snakes) {
             if (snake.alive) {
                 // Update snake position
-                snake.update(this.keysPressed);
+                snake.update(this.keysPressed);                
+
+                this.checkAppleCollision(snake);
 
                 // Check for collision after updating position
                 if (snake.checkCollision()) {
@@ -219,6 +243,101 @@ class Game {
         // Display the game speed with two decimal places
         const gameSpeedDiv = document.getElementById('game-speed');
         gameSpeedDiv.textContent = `Rychlost: ${gameSpeedDisplay.toFixed(0)} %`;
+    }
+
+    checkAppleCollision(snake) {        
+        this.apples.forEach(apple => {
+            if (collisionHelper.isPointInsideCircle(snake.x, snake.y, apple.x, apple.y, apple.radius + this.lineWidth / 2)) {
+                // Collision detected
+                console.log(`Snake ${snake.player.id} collected an apple at (${apple.x}, ${apple.y})`);                
+                apple.isEaten = true;
+                this.scores[snake.player.id]++; // Increment snake's score
+                this.updateScoreboard(); // Update scoreboard
+
+                // Optionally, play a sound or give visual feedback
+                this.playAppleCollectionSound();
+            }
+        });
+
+        this.eatenApples = [...this.eatenApples, ...this.apples.filter(a => a.isEaten)];
+        this.apples = this.apples.filter(a => !a.isEaten);
+    }    
+    
+    playAppleCollectionSound() {
+        if (!this.audioCtx) {
+            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        // Load and play the music file
+        this.biteAudio = new Audio('bite.mp3');
+        this.biteAudio.loop = false;
+        this.biteAudio.volume = .075;        
+        this.biteAudio.currentTime = .03;
+        this.biteAudio.play().catch((error) => {
+            console.error('Error playing music:', error);
+        });
+    }
+
+    generateApple() {
+        if (!this.displayApples) return;
+
+        const maxAttempts = 100; // Prevent infinite loops
+        let attempts = 0;
+        let validPosition = false;
+        let x, y;
+
+        while (!validPosition && attempts < maxAttempts) {
+            // Generate random coordinates within the canvas bounds, considering apple radius
+            x = this.appleRadius + Math.random() * (this.canvas.width - 2 * this.appleRadius);
+            y = this.appleRadius + Math.random() * (this.canvas.height - 2 * this.appleRadius);
+
+            // Check collision with existing apples
+            let collisionWithApples = this.apples.some(apple => {
+                const dx = x - apple.x;
+                const dy = y - apple.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                return distance < (this.appleRadius * 2);
+            });
+
+            // Check collision with snakes
+            let collisionWithSnakes = this.snakes.some(snake => {
+                return snake.segments.some(segment => {
+                    return collisionHelper.isPointInsideCircle(x, y, segment.x1, segment.y1, this.appleRadius) ||
+                           collisionHelper.isPointInsideCircle(x, y, segment.x2, segment.y2, this.appleRadius);
+                });
+            });
+
+            if (!collisionWithApples && !collisionWithSnakes) {
+                validPosition = true;
+            }
+
+            attempts++;
+        }
+
+        if (validPosition) {
+            const newApple = new Apple(x, y, this.appleRadius, 'red');
+            this.apples.push(newApple);
+            console.log(`Apple added at (${x}, ${y})`);
+        } else {
+            console.warn('Failed to place a new apple after maximum attempts.');
+        }
+    }
+
+    startAppleTimer() {
+        if (!this.displayApples) return;
+
+        this.appleTimer = setInterval(() => {
+            this.generateApple();
+        }, this.appleDisplayFrequencyInSeconds * 1000); // Convert seconds to milliseconds
+    }
+
+    /**
+     * Stops the apple generation timer.
+     */
+    stopAppleTimer() {
+        if (this.appleTimer) {
+            clearInterval(this.appleTimer);
+            this.appleTimer = null;
+        }
     }
 
     updateMusicPlaybackRate() {
@@ -295,7 +414,8 @@ class Game {
 
     endRound() {
         clearInterval(this.gameTickInterval);
-        
+        this.stopAppleTimer(); // Stop apple generation timer
+
         if(this.aliveSnakes.length === 1){
             this.scores[this.aliveSnakes[0].player.id]++;
         }

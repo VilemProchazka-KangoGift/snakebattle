@@ -136,7 +136,7 @@ class Snake {
             // add more points around the future segment
             for (let addToX = -1 * radius; addToX <= radius; addToX++) {
                 for (let addToY = -1 * radius; addToY <= radius; addToY++) {
-                    if(this.isPointInsideCircle(segment.x2 + addToX, segment.y2 + addToY, s.x1, s.y1, radius)){
+                    if(collisionHelper.isPointInsideCircle(segment.x2 + addToX, segment.y2 + addToY, s.x1, s.y1, radius)){
                         return true;
                     }                
                 }
@@ -145,13 +145,7 @@ class Snake {
         return false;
     }
 
-    isPointInsideCircle(x1, y1, x2, y2, r) {
-        const dx = x1 - x2;
-        const dy = y1 - y2;
-        const distanceSquared = dx * dx + dy * dy;
-        const radiusSquared = r * r;
-        return distanceSquared <= radiusSquared;
-    }
+    
 
     draw(ctx) {
         if (this.segments.length === 0) return;
