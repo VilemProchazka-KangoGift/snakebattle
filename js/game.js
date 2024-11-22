@@ -416,12 +416,14 @@ class Game {
         scoreboard.innerHTML = '<h3>Skóre</h3>';
         scoreboard.innerHTML += `<div>Kolo: <b>${this.currentRound + 1}</b>/${this.numRounds}</div>`;
         for (let i = 0; i < this.numPlayers; i++) {
+            const snakeOfPlayer = this.snakes.filter(s=>s.player.id === this.players[i].id)[0];
             let controls = this.players[i].controls;
             let leftKey = this.getKeyName(controls.left);
             let rightKey = this.getKeyName(controls.right);
             const isTopPlayer = maxScore > 0 && this.scores[i] === maxScore;
             const topPlayerBadge = isTopPlayer ? "&#x1F451;" : "";
-            scoreboard.innerHTML += `<div style="color:${this.players[i].color}">${topPlayerBadge}Hráč ${i + 1}: <b>${this.scores[i]}</b><br><small>${leftKey} / ${rightKey}</small></div>`;
+            const deadPlayerBadge = snakeOfPlayer.alive ? '' : "&#128128;";
+            scoreboard.innerHTML += `<div style="color:${this.players[i].color}">${topPlayerBadge}${deadPlayerBadge}Hráč ${i + 1}: <b>${this.scores[i]}</b><br><small>${leftKey} / ${rightKey}</small></div>`;
         }
     }
 
