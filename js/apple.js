@@ -1,13 +1,15 @@
 class Apple {
-    constructor(x, y, radius, color) {
+    constructor(x, y, radius, specialAppleProbability) {        
         this.x = x;
         this.y = y;
-        this.radius = radius;
-        this.color = color;
+        this.radius = radius;        
         this.createdAt = Date.now(); // Timestamp when the apple was created
-        this.isEaten = false;
-        this.pointValue = 1;
+        this.isEaten = false;        
         this.biteAudio = null;
+
+        this.isSpecialApple = Math.random() <= specialAppleProbability;
+        this.color = this.isSpecialApple ? 'gold' : 'red';
+        this.pointValue = this.isSpecialApple ? 3 : 1;
     }
 
     draw(ctx) {

@@ -21,6 +21,7 @@ class Game {
         this.displayApples = GameConfig.displayApples;
         this.appleDisplayFrequencyInSeconds = GameConfig.appleDisplayFrequencyInSeconds;        
         this.appleRadius = GameConfig.appleRadius;
+        this.specialAppleProbability = GameConfig.specialAppleProbability;
 
         // Game State Variables
         this.appleTimer = null;
@@ -297,8 +298,8 @@ class Game {
             // Check collision with snakes
             let collisionWithSnakes = this.snakes.some(snake => {
                 return snake.segments.some(segment => {
-                    return collisionHelper.isPointInsideCircle(x, y, segment.x1, segment.y1, this.appleRadius) ||
-                           collisionHelper.isPointInsideCircle(x, y, segment.x2, segment.y2, this.appleRadius);
+                    return collisionHelper.isPointInsideCircle(x, y, segment.x1, segment.y1, this.appleRadius + this.lineWidth) ||
+                           collisionHelper.isPointInsideCircle(x, y, segment.x2, segment.y2, this.appleRadius + this.lineWidth);
                 });
             });
 
@@ -310,7 +311,7 @@ class Game {
         }
 
         if (validPosition) {
-            const newApple = new Apple(x, y, this.appleRadius, 'red');
+            const newApple = new Apple(x, y, this.appleRadius, this.specialAppleProbability);
             this.apples.push(newApple);
             console.log(`Apple added at (${x}, ${y})`);
         } else {
