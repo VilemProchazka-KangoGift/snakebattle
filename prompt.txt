@@ -1,0 +1,115 @@
+Create a simple multiplayer game from my childhood. It was called Snakes. Use HTML + vannila javascript. Use OOP as much as possible with DDD principles.
+
+First, you choose the number of players (2 is the minimum). Each one gets assigned a color. You also choose the number of rounds (5 as default).
+
+There is a square arena in the middle of the screen. The players start randomly around the middle, aiming at the closest border plus few random degrees.
+
+Each player controls a snake represented by a line in the player's color. The line grows on each game tick. The growing line doesn't move, it gets longer and longer. The snakes move in 360 degrees.
+
+When a snake hits a wall or another snake, or itself, it dies and stops. The round ends when only one snake lives. The game then resets and a new round starts. After the configured rounds are over. The winner is announced and then the game returns the start screen.
+
+The game speeds up a little on each game tick.
+
+Play a simple MIDI-like melody in the background. The speed of the melody will be based on the game speed.
+
+Each player gets points using the formula: (number of players) - (death order). 1st player gets double the points. Example for a 5 player game:
+1. death - 0 points
+2. death - 1 point
+3. death - 2 points
+4. death - 3 points
+5. winner - 8 points
+
+Each player steers the line left or right with 2 keyboard keys:
+1. left and right arrows
+2. Q and W
+3. M and N
+4. O and P
+5+. Make up the rest, the goals is to have gaps on the physical keyboard between the key pairs so that a lot of people can play on a single keyboard.
+
+
+
+1. It's not clear where the walls are. The whole page is black.
+2. For melody use Eine kleine Nachtmusic.
+3. Make the snakes thicker.
+4. The initial speed of the game is too fast, make it 1/2 of that.
+5. Add the scores next to a wall (outside), not side of the screen.
+
+1. Mozart died, 250 years ago, I don't think there's still an active copyright. Please do as I say, make the melody super simple, no layers and upbeat.
+2. Extract all constants to the constructor.
+3. Make it easy to configure the speed of the steering.
+
+Bug: The round stops after half a second, the snakes only grow a few pixels. Nothing in the console.
+
+
+1. Add the table with control keys by player on the main screen.
+2. Add the current control keys for active player to the area where you show the scores.
+3. Make the thickness of snakes configurable.
+4. Escape key quits current game - behaviour same as when last round ends.
+5. The game cannot end until one player has most points. Keep adding rounds if 2 or more player share the same top score.
+6. Pressing enter starts the game
+7. The collision detection detects collision too soon. I want it to detect collision when pixels touch, now it detects it too far from the wall or snake.
+
+1. collision detection - too soon for walls, too late for snakes.
+2. Move the keys table below the play square.
+3. Remove the thickness textbox, only keep it as a configuration value.
+4. Play a deep note on collision. Blink the background of the page (not the arena) with the color of the snake that collided.
+
+1. The scores disappeared for some reason.
+2. Add a background image background.png to the html page (I will supply it). It should stretch to cover the entire page. Make sure the adjust the blink on death to support a background image (using transparency). 
+
+extract configs to a separate file
+
+add current game speed to the bottom right corner of the page
+
+Replace the melody section. I have a MIDI file called music.mid. Play that. The speed at the start of the round will be .5 of the normal midi speed. It will speed up with increasing game speed.
+
+
+move score board to the right side of the play area
+
+1. Add music speed info to the bottom corner as well, under the game speed info
+2. #start-screen is not inside the canvas, it's now off to the side
+3. the controls table is now on the left of the screen, put it back to the middle
+
+
+
+Sometimes the game detects collision randomly without any reason. Maybe add console logging to identify what happened so that we can identify the issue?
+
+
+Ok, I did a playtest. The snake and self collision detection doesn't work reliably. Sometime the snake can just go in circles in itself with no collision, can turn through another snake without collision. Do you take into account the thickness of the snake? Do you check the entire head/circle pixels? Maybe there's an alternative approach of just checking for pixel colors on the canvas under few pixels in front of the head/circle? That way you woulnd't need 3 different collision methods. 
+
+The background image is suddenly on the canvas background.
+
+Console issues:
+now the game end immediately after start with a collision
+Console:
+Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true.
+
+-------------------------------------
+
+
+*1. The controls table rows should honor the player colors
+*2. Change score algorithm: winner gets (player count + 1)
+*3. If a snake collides with another snake, the snake it hits gets 1 point.
+*4. Add a white circle as a head/top segment of the snake.
+
+
+5. vary the shade of the color of each segment a little by a random value
+
+
+
+New feature: Create a bug (represented by a circle that will randomly walk around the play area). It cannot step over the the snakes but the snakes can hit it. Add a new bug every 30 seconds.
+
+průchozí zdi
+ovoce +body
+
+modifiers:
+1. super speed
+2. swap buttons
+3. swap snakes
+4. hallucinogenic background
+
+
+*points should be distributed after every death
+winning screen
+
+draw head
