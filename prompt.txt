@@ -113,3 +113,5 @@ modifiers:
 winning screen
 
 draw head
+
+front hit - kill both

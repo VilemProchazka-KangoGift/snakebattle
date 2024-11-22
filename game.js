@@ -251,12 +251,15 @@ class Game {
 
     updateScoreboard() {
         let scoreboard = document.getElementById('scoreboard');
+        const maxScore = Math.max(...this.scores);
         scoreboard.innerHTML = '<h3>Skóre</h3>';
         for (let i = 0; i < this.numPlayers; i++) {
             let controls = this.players[i].controls;
             let leftKey = this.getKeyName(controls.left);
             let rightKey = this.getKeyName(controls.right);
-            scoreboard.innerHTML += `<div style="color:${this.players[i].color}">Hráč ${i + 1}: <b>${this.scores[i]}</b><br><small>${leftKey} / ${rightKey}</small></div>`;
+            const isTopPlayer = maxScore > 0 && this.scores[i] === maxScore;
+            const topPlayerBadge = isTopPlayer ? "&#x1F451;" : "";
+            scoreboard.innerHTML += `<div style="color:${this.players[i].color}">${topPlayerBadge}Hráč ${i + 1}: <b>${this.scores[i]}</b><br><small>${leftKey} / ${rightKey}</small></div>`;
         }
     }
 
