@@ -53,7 +53,7 @@ class Apple {
         const players = game.aliveSnakes.map(s=>s.player);
         const playersShuffled = this.shuffleArray(players);
         game.aliveSnakes.forEach((s, i)=>s.player = playersShuffled[i]);
-        game.gameFrozen = true;
+        setTimeout(() => game.gameFrozen = true, 50);        
         setTimeout(() => game.gameFrozen = false, 1700);
     }
 
