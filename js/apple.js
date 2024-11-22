@@ -36,9 +36,22 @@ class Apple {
         if(this.isSpecialApple){
             this.shuffleArray([
                 this.startHallucinogenicBackground, 
-                ()=>this.shufflePlayers(game)
+                ()=>this.shufflePlayers(game),
+                ()=>this.speedUp(game),
+                ()=>this.slowDown(game)
             ])[0]();
         }
+    }
+
+    slowDown(game){
+        game.gameSpeed -= game.initialSnakeSpeed;
+        setTimeout(()=>game.gameSpeed += game.initialSnakeSpeed, 5000);
+    }
+
+
+    speedUp(game){
+        game.gameSpeed += 2;
+        setTimeout(()=>game.gameSpeed -= 2, 5000);
     }
 
     shufflePlayers(game){
