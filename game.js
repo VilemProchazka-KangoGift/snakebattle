@@ -253,6 +253,7 @@ class Game {
         let scoreboard = document.getElementById('scoreboard');
         const maxScore = Math.max(...this.scores);
         scoreboard.innerHTML = '<h3>Skóre</h3>';
+        scoreboard.innerHTML += `<div>Kolo: <b>${this.currentRound + 1}</b>/${this.numRounds}</div>`;
         for (let i = 0; i < this.numPlayers; i++) {
             let controls = this.players[i].controls;
             let leftKey = this.getKeyName(controls.left);
