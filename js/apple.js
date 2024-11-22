@@ -37,31 +37,28 @@ class Apple {
             this.shuffleArray([
                 this.startHallucinogenicBackground, 
                 ()=>this.shufflePlayers(game),
-                ()=>this.speedUp(game)
+                ()=>this.temporarySpeedUp(game),                
             ])[0]();
         }
     }
-
-    slowDown(game){
-        game.gameSpeed -= game.initialSnakeSpeed;
-        setTimeout(()=>game.gameSpeed += game.initialSnakeSpeed, 5000);
-    }
-
-
-    speedUp(game){
-        game.gameSpeed += 2;
-        setTimeout(()=>game.gameSpeed -= 2, 5000);
+    
+    temporarySpeedUp(game){
+        console.log("speed up side effect")        
+        game.aliveSnakes.forEach(s=>s.speed += 1.2);        
+        setTimeout(()=>game.aliveSnakes.forEach(s=>s.speed -= 1), 3000);
     }
 
     shufflePlayers(game){
+        console.log("shuffle side effect")
         const players = game.aliveSnakes.map(s=>s.player);
         const playersShuffled = this.shuffleArray(players);
         game.aliveSnakes.forEach((s, i)=>s.player = playersShuffled[i]);
         game.gameFrozen = true;
-        setTimeout(()=>game.gameFrozen = false, 1500);
+        setTimeout(() => game.gameFrozen = false, 1700);
     }
 
     startHallucinogenicBackground(){
+        console.log("hallucination side effect")
         document.getElementById("gameCanvas").classList.add("animated-background");
             document.getElementById("gameCanvas").dataset.lastAppleId = this.id;
             setTimeout(()=>{
