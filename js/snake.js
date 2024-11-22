@@ -1,5 +1,5 @@
 class Snake {
-    constructor(game, player, canvasWidth, canvasHeight, initialSpeed, speedIncrement, steeringSpeed, lineWidth, existingSnakes) {
+    constructor(game, player, position, canvasWidth, canvasHeight, initialSpeed, speedIncrement, steeringSpeed, lineWidth) {
         this.game = game; // Store the reference to the Game instance
         this.player = player;
         this.canvasWidth = canvasWidth;
@@ -7,15 +7,15 @@ class Snake {
         this.alive = true;
         // Initialize segments and previous position
         this.segments = [];
-        this.x = canvasWidth / 2 + (Math.random() - 0.5) * 100;
-        this.y = canvasHeight / 2 + (Math.random() - 0.5) * 100;
+        this.x = position.px;
+        this.y = position.py;
         this.prevX = this.x;
         this.prevY = this.y;
 
         console.log(`Initialized snake ${player.id} at position (${this.x}, ${this.y})`);
 
         // Aim at a random direction
-        this.angle = Math.random() * 2 * Math.PI;
+        this.angle = position.angle;
 
         this.speed = initialSpeed;
         this.speedIncrement = speedIncrement;

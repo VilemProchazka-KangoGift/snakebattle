@@ -194,6 +194,8 @@ class Game {
         this.startAppleTimer(); // Start apple generation timer
 
         // Initialize players and snakes
+        const positioningMap = positioningHelpers.positionPointsOnCircle(this.canvas.width, this.canvas.height, 35, 20, this.numPlayers, .2);
+        console.log(positioningMap);
         for (let i = 0; i < this.numPlayers; i++) {
             let color = this.colors[i % this.colors.length];
             let colorAsHex = this.colorsAsHex[i % this.colors.length];
@@ -203,13 +205,13 @@ class Game {
             let snake = new Snake(
                 this,
                 player,
+                positioningMap.get(i),
                 this.canvas.width,
                 this.canvas.height,
                 this.initialSnakeSpeed,
                 this.snakeSpeedIncrement,
                 this.steeringSpeed,
-                this.lineWidth,
-                this.snakes
+                this.lineWidth
             );
             this.snakes[i] = snake;
             this.aliveSnakes.push(snake);

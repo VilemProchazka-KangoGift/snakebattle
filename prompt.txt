@@ -140,3 +140,16 @@ Add the number of seconds into config.js and also add a bool ShowApples to the c
 
 I also made some small changes to the file meanwhile. Here's the latest version:
 
+
+
+
+Create a javascript function that does the following:
+- You have a canvas of X px width nad Y px heigh 
+- You are given R pixel radius, M as min pixel distance.
+- Position N number of points on the canvas 
+- Return a javascript map with index as key and value will be PX, PY positions inside the canvas and a starting angle
+- The points must be positioned on the edge of a circle with radius R.
+- Make sure that the individual positions aren't close to each other (>= M)
+- Circle is in the center of the canvas
+- Starting angle corresponds to the angle from the center of the canvas
+- Add random variations (-10% to 10%) to each of the returned values
