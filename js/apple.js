@@ -38,8 +38,31 @@ class Apple {
                 this.startHallucinogenicBackground, 
                 ()=>this.shufflePlayers(game),
                 ()=>this.temporarySpeedUp(game),                
+                ()=>this.pernamentSpeedDown(game)
             ])[0]();
         }
+    }
+/*
+    shortenSnakes(game){
+        console.log("shorten snakes side effect")        
+        game.aliveSnakes.forEach(s=>s.segments = s.segments.slice(s.segments.length / 2));        
+        game.aliveSnakes.forEach(s=>s.segments = []);        
+    }*/
+
+    pernamentSpeedDown(game){
+        console.log("speed down side effect")        
+        game.aliveSnakes.forEach(s=>{
+            let targetSpeed = s.speed;
+            if(s.isBoosting){
+                targetSpeed -= game.boostSpeed;
+                targetSpeed = (targetSpeed / 2) + game.boostSpeed;
+            }
+            else{
+                targetSpeed = (targetSpeed / 2);
+            }
+
+            s.speed = targetSpeed;
+        });
     }
     
     temporarySpeedUp(game){
