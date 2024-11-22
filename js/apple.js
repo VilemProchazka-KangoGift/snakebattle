@@ -37,8 +37,7 @@ class Apple {
             this.shuffleArray([
                 this.startHallucinogenicBackground, 
                 ()=>this.shufflePlayers(game),
-                ()=>this.speedUp(game),
-                ()=>this.slowDown(game)
+                ()=>this.speedUp(game)
             ])[0]();
         }
     }
