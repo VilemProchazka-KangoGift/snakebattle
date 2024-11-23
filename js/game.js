@@ -27,6 +27,7 @@ class Game {
 
         // Game State Variables
         this.appleTimer = null;
+        this.roundTimeout = null;
         this.players = [];
         this.snakes = [];
         this.aliveSnakes = [];
@@ -116,6 +117,8 @@ class Game {
     }
 
     resetGame() {
+        this.postGameCleanup();
+
         // Hide the winning screen
         document.getElementById('winning-screen').style.display = 'none';
         
@@ -179,6 +182,8 @@ class Game {
     }
 
     startRound() {
+        this.postGameCleanup();
+
         // Clear the canvas and fill it with the background color
         document.getElementById("gameCanvas").classList.remove("animated-background");
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -461,13 +466,13 @@ class Game {
         if (topPlayers > 1) {
             // If tie, add another round
             this.numRounds++;
-            setTimeout(() => {
+            this.roundTimeout = setTimeout(() => {
                 this.startRound();
             }, 2000);
         } else if (this.currentRound >= this.numRounds) {
             this.endGame();
         } else {
-            setTimeout(() => {
+            this.roundTimeout = setTimeout(() => {
                 this.startRound();
             }, 2000);
         }
@@ -475,12 +480,11 @@ class Game {
         this.keysPressed = {};
     }   
 
-    // Inside the Game class
-
-    endGame() {
+    postGameCleanup(){
         clearInterval(this.gameTickInterval);
+        clearTimeout(this.roundTimeout); 
         this.stopAppleTimer();
-        this.updateScoreboard();
+        this.gameFrozen = false;        
 
         if (this.musicAudio) {
             this.musicAudio.pause();
@@ -490,6 +494,18 @@ class Game {
             this.audioCtx.close();
             this.audioCtx = null;
         }
+
+        // Reset game speed and music speed display
+        const gameSpeedDiv = document.getElementById('game-speed');
+        gameSpeedDiv.textContent = 'Rychlost: 0';
+        const musicSpeedDiv = document.getElementById('music-speed');
+        musicSpeedDiv.textContent = 'Rychlost hudby: 0';
+    }
+
+    endGame() {
+        this.postGameCleanup();
+        this.updateScoreboard();
+
         
         // Determine the winner(s)
         let maxScore = Math.max(...this.scores);
@@ -544,12 +560,6 @@ class Game {
         document.getElementById('winning-screen').style.display = '';
         document.getElementById('start-screen').style.display = 'none';                
         document.getElementById('scoreboard').style.display = 'none';
-        
-        // Reset game speed and music speed display
-        const gameSpeedDiv = document.getElementById('game-speed');
-        gameSpeedDiv.textContent = 'Rychlost: 0';
-        const musicSpeedDiv = document.getElementById('music-speed');
-        musicSpeedDiv.textContent = 'Rychlost hudby: 0';
     }
 
 
