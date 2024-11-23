@@ -181,7 +181,7 @@ class Snake {
     
         // === 1. Draw the White Outline for the Entire Snake ===
         ctx.lineWidth = lineWidth + 1; // Adjust outline thickness as needed
-        ctx.strokeStyle = this.game.shadeColor(this.player.colorAsHex, 0.1);;
+        ctx.strokeStyle = drawHelper.shadeColor(this.player.colorAsHex, 0.1);
         ctx.beginPath();
     
         // Move to the first point

@@ -9,14 +9,19 @@ class Apple {
         this.biteAudio = null;
 
         this.isSpecialApple = specialAppleProbability > 0 && Math.random() <= specialAppleProbability;
-        this.color = this.isSpecialApple ? 'gold' : 'red';
+        this.color = this.isSpecialApple ? '#FFD700' /* gold */ : '#FF0000';
         this.pointValue = this.isSpecialApple ? 3 : 1;
     }
 
     draw(ctx) {
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = drawHelper.shadeColor(this.color, 0.4);
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius - 2, 0, 2 * Math.PI);
         ctx.fill();
     }
 
@@ -24,7 +29,7 @@ class Apple {
         ctx.save();
         ctx.globalCompositeOperation = 'destination-out'
         ctx.fillStyle = 'black';        
-        ctx.arc(this.x, this.y, this.radius + 1, 0, 2 * Math.PI);
+        ctx.arc(this.x, this.y, this.radius + 3, 0, 2 * Math.PI);
         ctx.fill();
         ctx.restore();
     }
