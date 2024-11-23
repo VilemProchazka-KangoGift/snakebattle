@@ -22,7 +22,7 @@ const GameConfig = {
     melodyVolume: 0.1, // Volume for the background melody
     musicFile: 'music.mp3', // Music file (converted from music.mid)
     initialMusicPlaybackRate: 0.85, // Starting playback rate for the music
-    displayApples: true,
+    displayApples: false,
     displayGoldenApples: true,
     appleDisplayFrequencyInSeconds: 10,
     appleRadius : 6,
