@@ -53,6 +53,8 @@ class Apple {
         console.log("speed down side effect")        
         game.aliveSnakes.forEach(s=>{
             let targetSpeed = s.speed;
+            let targetMusicRate = game.initialMusicPlaybackRate + (game.musicAudio.playbackRate - game.initialMusicPlaybackRate) / 6;
+            console.log(game.initialMusicPlaybackRate, targetMusicRate);     
             if(s.isBoosting){
                 targetSpeed -= game.boostSpeed;
                 targetSpeed = (targetSpeed / 2) + game.boostSpeed;
@@ -61,20 +63,38 @@ class Apple {
                 targetSpeed = (targetSpeed / 2);
             }
 
+            game.musicAudio.playbackRate = targetMusicRate;
             s.speed = targetSpeed;
+            game.updateGameSpeed();
         });
     }
     
     temporarySpeedUp(game){
-        console.log("speed up side effect")        
+        console.log("speed up side effect")    
+        let targetMusicIncrement = game.musicAudio.playbackRate * 1.5 - game.musicAudio.playbackRate;        
+        console.log(game.initialMusicPlaybackRate, targetMusicIncrement);
+
+        game.musicAudio.playbackRate += targetMusicIncrement;        
         game.aliveSnakes.forEach(s=>s.speed += 1.2);        
-        setTimeout(()=>game.aliveSnakes.forEach(s=>s.speed -= 1), 3000);
+        game.updateGameSpeed();
+
+        setTimeout(()=>{
+            game.musicAudio.playbackRate -= targetMusicIncrement;
+            game.aliveSnakes.forEach(s=>s.speed -= 1);
+            game.updateGameSpeed();
+        }, 3000);        
     }
 
     shufflePlayers(game){
         console.log("shuffle side effect")
         const players = game.aliveSnakes.map(s=>s.player);
-        const playersShuffled = this.shuffleArray(players);
+        
+        let isShuffleunique = false;
+        let playersShuffled = [];
+        while(!isShuffleunique){
+            playersShuffled = this.shuffleArray(players);
+            isShuffleunique = players.every((value, index) => value.id !== playersShuffled[index].id)
+        }
         game.aliveSnakes.forEach((s, i)=>s.player = playersShuffled[i]);
         setTimeout(() => game.gameFrozen = true, 50);        
         setTimeout(() => game.gameFrozen = false, 1700);
@@ -88,15 +108,16 @@ class Apple {
                 if(document.getElementById("gameCanvas").dataset.lastAppleId == this.id){
                     document.getElementById("gameCanvas").classList.remove("animated-background");
                 }
-            }, 10000)      
+            }, 6000)      
     }
 
-    shuffleArray = arr => {
+    shuffleArray = (arr) => {
         const newArr = arr.slice()
         for (let i = newArr.length - 1; i > 0; i--) {
             const rand = Math.floor(Math.random() * (i + 1));
             [newArr[i], newArr[rand]] = [newArr[rand], newArr[i]];
         }
+
         return newArr
     };
 

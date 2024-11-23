@@ -195,7 +195,7 @@ class Game {
 
         // Initialize players and snakes
         const positioningMap = positioningHelpers.positionPointsOnCircle(this.canvas.width, this.canvas.height, 35, 20, this.numPlayers, .2);
-        console.log(positioningMap);
+        
         for (let i = 0; i < this.numPlayers; i++) {
             let color = this.colors[i % this.colors.length];
             let colorAsHex = this.colorsAsHex[i % this.colors.length];
@@ -263,13 +263,18 @@ class Game {
         this.updateMusicPlaybackRate();
     }
 
-    updateGameSpeedDisplay() {
+    updateGameSpeed(){
         // Calculate average speed of alive snakes
         let totalSpeed = 0;
         for (let snake of this.aliveSnakes) {
             totalSpeed += snake.speed;
         }
+
         this.gameSpeed = (totalSpeed / this.aliveSnakes.length) || 0;
+    }
+
+    updateGameSpeedDisplay() {        
+        this.updateGameSpeed();
         const gameSpeedDisplay = (this.gameSpeed / this.initialSnakeSpeed) * 100
         // Display the game speed with two decimal places
         const gameSpeedDiv = document.getElementById('game-speed');
@@ -329,7 +334,7 @@ class Game {
         if (validPosition) {
             const newApple = new Apple(x, y, this.appleRadius, this.displayGoldenApples ? this.specialAppleProbability : 0);
             this.apples.push(newApple);
-            console.log(`Apple added at (${x}, ${y})`);
+            //console.log(`Apple added at (${x}, ${y})`);
         } else {
             console.warn('Failed to place a new apple after maximum attempts.');
         }
@@ -353,10 +358,12 @@ class Game {
         }
     }
 
+    getMusicPlaybackStep = ()=>(this.gameSpeed - this.initialSnakeSpeed) * 0.2;    
+
     updateMusicPlaybackRate() {
         if (this.musicAudio && !this.musicAudio.paused) {
             // Map the game speed to a playback rate
-            let playbackRate = this.initialMusicPlaybackRate + (this.gameSpeed - this.initialSnakeSpeed) * 0.2;
+            let playbackRate = this.initialMusicPlaybackRate + this.getMusicPlaybackStep();
             // Ensure playbackRate stays within reasonable bounds
             playbackRate = Math.min(Math.max(playbackRate, 0.5), 3);
             this.musicAudio.playbackRate = playbackRate;
