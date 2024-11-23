@@ -34,7 +34,7 @@ class Apple {
         ctx.restore();
     }
     
-    collect(game){
+    collect(game, eatenBySnake){
         this.isEaten = true;
         this.playAppleCollectionSound();
         
@@ -47,6 +47,9 @@ class Apple {
                 ()=>this.shortenSnakes(game),
                 ()=>this.thinSnakes(game)               
             ])[0]();
+        }
+        else{
+            eatenBySnake.speed += game.snakeSpeedIncrement * 50;
         }
     }
 

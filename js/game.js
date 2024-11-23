@@ -295,7 +295,7 @@ class Game {
         this.apples.forEach(apple => {
             if (collisionHelper.isPointInsideCircle(snake.x, snake.y, apple.x, apple.y, apple.radius + 3)) {                
                 console.log(`Snake ${snake.player.id} collected an apple at (${apple.x}, ${apple.y})`);                
-                apple.collect(this);
+                apple.collect(this, snake);
                 this.scores[snake.player.id] += apple.pointValue; // Increment snake's score
                 this.updateScoreboard(); // Update scoreboard
             }
