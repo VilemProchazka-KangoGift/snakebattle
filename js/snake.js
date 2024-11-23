@@ -82,7 +82,8 @@ class Snake {
                 x1: this.prevX,
                 y1: this.prevY,
                 x2: this.x,
-                y2: this.y
+                y2: this.y,
+                markedForDeletion: false
             });
         }        
     }
@@ -147,9 +148,29 @@ class Snake {
 
     draw(ctx) {
         if (this.segments.length === 0) return;
+
+        let deletedSegments = this.segments.filter(s=> s.markedForDeletion);
+        this.drawPart(ctx, deletedSegments, true);
+
+        this.segments = this.segments.filter(s=> !s.markedForDeletion);
+        this.drawPart(ctx, this.segments, false);          
+    }
+
+    drawPart(ctx, segments, deleteSegments) {        
+        if (segments.length === 0) return;
+
+        let lineWidth = this.lineWidth;
+        if(deleteSegments){
+            ctx.save();
+            ctx.globalCompositeOperation = 'destination-out'
+            ctx.fillStyle = 'black';   
+            lineWidth = lineWidth + 4.5;
+        }
+
+        if (segments.length === 0) return;
     
         // Extract all points from segments
-        const points = this.segments.map(segment => ({ x: segment.x2, y: segment.y2 }));
+        const points = segments.map(segment => ({ x: segment.x2, y: segment.y2 }));
     
         // Ensure there's at least two points to draw a line
         if (points.length < 2) return;
@@ -159,12 +180,12 @@ class Snake {
         ctx.lineJoin = 'round';
     
         // === 1. Draw the White Outline for the Entire Snake ===
-        ctx.lineWidth = this.lineWidth + 1; // Adjust outline thickness as needed
+        ctx.lineWidth = lineWidth + 1; // Adjust outline thickness as needed
         ctx.strokeStyle = this.game.shadeColor(this.player.colorAsHex, 0.1);;
         ctx.beginPath();
     
         // Move to the first point
-        ctx.moveTo(this.segments[0].x1, this.segments[0].y1);
+        ctx.moveTo(segments[0].x1, segments[0].y1);
     
         // Iterate through points and draw quadratic curves
         for (let i = 0; i < points.length - 1; i++) {
@@ -187,11 +208,11 @@ class Snake {
         ctx.stroke();
     
         // === 2. Draw the Main Snake Line on Top of the Outline ===
-        ctx.lineWidth = this.lineWidth;
+        ctx.lineWidth = lineWidth;
         ctx.strokeStyle = this.player.colorAsHex;// this.scalePattern;
         ctx.beginPath();
     
-        ctx.moveTo(this.segments[0].x1, this.segments[0].y1);
+        ctx.moveTo(segments[0].x1, segments[0].y1);
     
         for (let i = 0; i < points.length - 1; i++) {
             const currentPoint = points[i];
@@ -211,10 +232,16 @@ class Snake {
     
         // === 3. Draw the Enlarged Head ===
         // Draw a larger white circle at the head position
-        ctx.fillStyle = 'white';
-        ctx.beginPath();
-        const headRadius = this.lineWidth * 1; // Double the original size
-        ctx.arc(this.x, this.y, headRadius, 0, 2 * Math.PI);
-        ctx.fill();          
+        if(!deleteSegments){
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            const headRadius = lineWidth * 1;
+            ctx.arc(this.x, this.y, headRadius, 0, 2 * Math.PI);
+            ctx.fill();    
+        }
+        
+        if(deleteSegments){
+            ctx.restore();
+        }
     }
 }

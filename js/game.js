@@ -201,7 +201,10 @@ class Game {
         this.startAppleTimer(); // Start apple generation timer
 
         // Initialize players and snakes
-        const positioningMap = positioningHelpers.positionPointsOnCircle(this.canvas.width, this.canvas.height, 35, 20, this.numPlayers, .2);
+        let positioningMap = null;
+        while(!positioningMap){
+            positioningMap = positioningHelpers.positionPointsOnCircle(this.canvas.width, this.canvas.height, 35, 17, this.numPlayers, .2)
+        }
         
         for (let i = 0; i < this.numPlayers; i++) {
             let color = this.colors[i % this.colors.length];

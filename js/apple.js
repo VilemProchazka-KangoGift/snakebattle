@@ -44,11 +44,12 @@ class Apple {
         }
     }
 
-   /* shortenSnakes(game){
+    shortenSnakes(game){
         console.log("shorten snakes side effect");                
-        game.aliveSnakes.forEach(s=>s.segments = s.segments.slice(s.segments.length / 2));        
-        game.aliveSnakes.forEach(s=>s.segments = []);        
-    }*/
+        game.aliveSnakes
+            .flatMap(snake => snake.segments.filter((_, index) => index <= snake.segments.length / 2))
+            .forEach(segment => segment.markedForDeletion = true);        
+    }
 
     pernamentSpeedDown(game){
         console.log("speed down side effect")        
