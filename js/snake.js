@@ -32,12 +32,12 @@ class Snake {
         this.isBoosting = newStatus;
 
         if(newStatus === true){
-            console.log("Boosting", this.player);           
+           // console.log("Boosting", this.player.id );           
             this.speed += this.game.boostSpeed;
         }
 
         if(newStatus === false){
-            console.log("Unboosting", this.player);
+           // console.log("Unboosting", this.player.id);
             this.speed -= this.game.boostSpeed;
         }
     }
@@ -144,8 +144,6 @@ class Snake {
         }
         return false;
     }
-
-    
 
     draw(ctx) {
         if (this.segments.length === 0) return;

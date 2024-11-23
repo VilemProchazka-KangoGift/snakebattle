@@ -38,13 +38,14 @@ class Apple {
                 this.startHallucinogenicBackground, 
                 ()=>this.shufflePlayers(game),
                 ()=>this.temporarySpeedUp(game),                
-                ()=>this.pernamentSpeedDown(game)
+                ()=>this.pernamentSpeedDown(game),
+                ()=>this.shortenSnakes(game)
             ])[0]();
         }
     }
-/*
-    shortenSnakes(game){
-        console.log("shorten snakes side effect")        
+
+   /* shortenSnakes(game){
+        console.log("shorten snakes side effect");                
         game.aliveSnakes.forEach(s=>s.segments = s.segments.slice(s.segments.length / 2));        
         game.aliveSnakes.forEach(s=>s.segments = []);        
     }*/
