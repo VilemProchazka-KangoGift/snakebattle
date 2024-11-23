@@ -169,7 +169,7 @@ class Game {
         this.displayApples = document.getElementById("display-apples").checked;
         this.displayGoldenApples = document.getElementById("display-golden-apples").checked;
         this.disableCollisionPointGain = document.getElementById("points-for-apples-only").checked;
-        this.appleDisplayFrequencyInSeconds = parseInt(document.getElementById("num-apple-frequency").value);
+        this.appleDisplayFrequencyInSeconds = parseFloat(document.getElementById("num-apple-frequency").value);
         this.specialAppleProbability = parseInt(document.getElementById("num-golden-apple-probability").value) / 100;
         
         this.currentRound = 0;
