@@ -26,5 +26,6 @@ const GameConfig = {
     displayGoldenApples: true,
     appleDisplayFrequencyInSeconds: 10,
     appleRadius : 6,
-    specialAppleProbability : .2
+    specialAppleProbability : .2,
+    disableCollisionPointGain : false
 };

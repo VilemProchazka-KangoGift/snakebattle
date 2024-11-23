@@ -23,6 +23,7 @@ class Game {
         this.appleDisplayFrequencyInSeconds = GameConfig.appleDisplayFrequencyInSeconds;        
         this.appleRadius = GameConfig.appleRadius;
         this.specialAppleProbability = GameConfig.specialAppleProbability;
+        this.disableCollisionPointGain = GameConfig.disableCollisionPointGain;
 
         // Game State Variables
         this.appleTimer = null;
@@ -164,6 +165,7 @@ class Game {
         this.numRounds = parseInt(document.getElementById('num-rounds').value);
         this.displayApples = document.getElementById("display-apples").checked;
         this.displayGoldenApples = document.getElementById("display-golden-apples").checked;
+        this.disableCollisionPointGain = document.getElementById("points-for-apples-only").checked;
         this.appleDisplayFrequencyInSeconds = parseInt(document.getElementById("num-apple-frequency").value);
         this.specialAppleProbability = parseInt(document.getElementById("num-golden-apple-probability").value) / 100;
         
@@ -378,9 +380,11 @@ class Game {
         deadSnake.alive = false;
         this.aliveSnakes.splice(this.aliveSnakes.indexOf(deadSnake), 1);
 
-        this.aliveSnakes
-            .map(snake=>snake.player.id)
-            .forEach(id=>this.scores[id]++);
+        if(!this.disableCollisionPointGain){
+            this.aliveSnakes
+                .map(snake=>snake.player.id)
+                .forEach(id=>this.scores[id]++);
+        }
 
         this.updateScoreboard();
 
@@ -438,8 +442,10 @@ class Game {
         clearInterval(this.gameTickInterval);
         this.stopAppleTimer(); // Stop apple generation timer
 
-        if(this.aliveSnakes.length === 1){
-            this.scores[this.aliveSnakes[0].player.id]++;
+        if(!this.disableCollisionPointGain){
+            if(this.aliveSnakes.length === 1){
+                this.scores[this.aliveSnakes[0].player.id]++;
+            }
         }
 
         this.updateScoreboard();

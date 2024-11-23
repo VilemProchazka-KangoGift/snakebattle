@@ -110,7 +110,7 @@ class Snake {
                 if (this.intersectsWithSegments(currentSegment, snake.segments)) {
                     console.log(`Snake ${this.player.id} collided with snake ${snake.player.id}.`);
 
-                    if(snake.alive){
+                    if(snake.alive && !this.game.disableCollisionPointGain){                        
                         this.game.scores[snake.player.id]++;
                         this.game.updateScoreboard();
                         console.log("Bonus points from to", this.player, snake.player)
