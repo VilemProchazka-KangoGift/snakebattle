@@ -39,9 +39,18 @@ class Apple {
                 ()=>this.shufflePlayers(game),
                 ()=>this.temporarySpeedUp(game),                
                 ()=>this.pernamentSpeedDown(game),
-                ()=>this.shortenSnakes(game)
+                ()=>this.shortenSnakes(game),
+                ()=>this.thinSnakes(game)               
             ])[0]();
         }
+    }
+
+    thinSnakes(game){
+        console.log("thin snakes side effect");   
+        game.aliveSnakes.forEach(s=> s.lineWidth = 1);             
+        setTimeout(()=>{
+            game.aliveSnakes.forEach(s=> s.lineWidth = game.lineWidth);
+        }, 10000);    
     }
 
     shortenSnakes(game){

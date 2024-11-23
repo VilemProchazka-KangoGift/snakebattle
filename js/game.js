@@ -25,7 +25,7 @@ class Game {
         this.specialAppleProbability = GameConfig.specialAppleProbability;
         this.disableCollisionPointGain = GameConfig.disableCollisionPointGain;
 
-        // Game State Variables
+        // Game State Variables        
         this.appleTimer = null;
         this.roundTimeout = null;
         this.players = [];
