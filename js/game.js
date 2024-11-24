@@ -488,6 +488,10 @@ class Game {
         clearTimeout(this.roundTimeout); 
         this.stopAppleTimer();
         this.gameFrozen = false;        
+        
+        const canvas = document.getElementById("gameCanvas");
+        canvas.style = "";
+        canvas.className = "";
 
         if (this.musicAudio) {
             this.musicAudio.pause();

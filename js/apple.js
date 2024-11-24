@@ -45,12 +45,21 @@ class Apple {
                 ()=>this.temporarySpeedUp(game),                
                 ()=>this.pernamentSpeedDown(game),
                 ()=>this.shortenSnakes(game),
-                ()=>this.thinSnakes(game)               
+                ()=>this.thinSnakes(game),            
+                ()=>this.flipCanvas(game)
             ])[0]();
         }
         else{
             eatenBySnake.speed += game.snakeSpeedIncrement * 50;
         }
+    }
+
+    flipCanvas(game){
+        console.log("flip canvas side effect");   
+        const canvas = document.getElementById("gameCanvas");
+        canvas.classList.toggle("side-effect-flip")
+        setTimeout(() => game.gameFrozen = true, 50);        
+        setTimeout(() => game.gameFrozen = false, 1700);
     }
 
     thinSnakes(game){
