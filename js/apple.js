@@ -46,12 +46,19 @@ class Apple {
                 ()=>this.pernamentSpeedDown(game),
                 ()=>this.shortenSnakes(game),
                 ()=>this.thinSnakes(game),            
-                ()=>this.flipCanvas(game)
+                ()=>this.flipCanvas(game),
+                this.rotateCanvas
             ])[0]();
         }
         else{
             eatenBySnake.speed += game.snakeSpeedIncrement * 50;
         }
+    }
+
+    rotateCanvas(){
+        console.log("flip canvas side effect");   
+        const canvas = document.getElementById("gameCanvas");
+        canvas.classList.toggle("side-effect-rotate")        
     }
 
     flipCanvas(game){
