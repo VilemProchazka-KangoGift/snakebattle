@@ -270,6 +270,35 @@
             }
         }
 
+        .side-effect-skew{            
+            transform: skew(0, 0);
+            animation: skew 12s ease-in-out 1 both;
+        }
+
+        @keyframes skew {
+            0% {
+                transform: skew(0, 0);
+            }
+            15% {
+                transform: skew(20deg, 0);
+            }
+            30% {
+                transform: skew(0, -20deg);
+            }
+            45% {
+                transform: skew(0, 0);
+            }
+            60% {
+                transform: skew(-20deg, 0);
+            }
+            75% {
+                transform: skew(0, 20deg);
+            }
+            100% {
+                transform: skew(0, 0);
+            }
+        }
+
         .side-effect-flip{
             transform: rotate(180deg);
         }

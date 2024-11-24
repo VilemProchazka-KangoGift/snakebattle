@@ -47,7 +47,8 @@ class Apple {
                 ()=>this.shortenSnakes(game),
                 ()=>this.thinSnakes(game),            
                 ()=>this.flipCanvas(game),
-                this.rotateCanvas
+                this.rotateCanvas,
+                this.skewCanvas
             ])[0]();
         }
         else{
@@ -55,8 +56,14 @@ class Apple {
         }
     }
 
+    skewCanvas(){
+        console.log("skew canvas side effect");   
+        const canvas = document.getElementById("gameCanvas");
+        canvas.classList.toggle("side-effect-skew")        
+    }
+
     rotateCanvas(){
-        console.log("flip canvas side effect");   
+        console.log("rotate canvas side effect");   
         const canvas = document.getElementById("gameCanvas");
         canvas.classList.toggle("side-effect-rotate")        
     }
