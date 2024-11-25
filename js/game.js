@@ -198,7 +198,7 @@ class Game {
         
         this.apples = []; // Reset apples for the new round        
         this.eatenApples = [];
-        this.startAppleTimer(); // Start apple generation timer
+        this.startAppleTimer(this.appleDisplayFrequencyInSeconds); // Start apple generation timer
 
         // Initialize players and snakes
         let positioningMap = null;
@@ -350,12 +350,12 @@ class Game {
         }
     }
 
-    startAppleTimer() {
+    startAppleTimer(frequencyInSeconds) {
         if (!this.displayApples) return;
 
         this.appleTimer = setInterval(() => {
             this.generateApple();
-        }, this.appleDisplayFrequencyInSeconds * 1000); // Convert seconds to milliseconds
+        }, frequencyInSeconds * 1000); // Convert seconds to milliseconds
     }
 
     /**
@@ -473,7 +473,9 @@ class Game {
                 this.startRound();
             }, 2000);
         } else if (this.currentRound >= this.numRounds) {
-            this.endGame();
+            this.roundTimeout = setTimeout(() => {
+                this.endGame();
+            }, 2000);            
         } else {
             this.roundTimeout = setTimeout(() => {
                 this.startRound();

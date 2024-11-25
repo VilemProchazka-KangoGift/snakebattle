@@ -36,10 +36,11 @@ class Apple {
     
     collect(game, eatenBySnake){
         this.isEaten = true;
-        this.playAppleCollectionSound();
+        this.playAppleCollectionSound();       
         
         if(this.isSpecialApple){
-            this.shuffleArray([
+
+            let effectArray = [
                 this.startHallucinogenicBackground, 
                 ()=>this.shufflePlayers(game),
                 ()=>this.temporarySpeedUp(game),                
@@ -49,11 +50,29 @@ class Apple {
                 ()=>this.flipCanvas(game),
                 this.rotateCanvas,
                 this.skewCanvas
-            ])[0]();
+            ];
+
+            if(game.displayApples){
+                effectArray = [...effectArray, ()=>this.superAppleMode(game)];
+            }
+
+            this.shuffleArray(effectArray)[0]();
         }
         else{
-            eatenBySnake.speed += game.snakeSpeedIncrement * 50;
+            eatenBySnake.speed += game.snakeSpeedIncrement * 75;
         }
+    }
+
+    superAppleMode(game){        
+        console.log("apple mode side effect");   
+        game.stopAppleTimer();        
+        game.startAppleTimer(.1);
+        
+        setTimeout(()=>{
+            if(game.appleTimer){
+                game.startAppleTimer(game.appleDisplayFrequencyInSeconds);
+            }
+        }, 4000);
     }
 
     skewCanvas(){
@@ -154,6 +173,10 @@ class Apple {
     }
 
     shuffleArray = (arr) => {
+        if(arr.length === 1){
+            return arr;
+        }
+
         const newArr = arr.slice()
         for (let i = newArr.length - 1; i > 0; i--) {
             const rand = Math.floor(Math.random() * (i + 1));
