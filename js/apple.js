@@ -70,9 +70,10 @@ class Apple {
         
         setTimeout(()=>{
             if(game.appleTimer){
+                game.stopAppleTimer();
                 game.startAppleTimer(game.appleDisplayFrequencyInSeconds);
             }
-        }, 4000);
+        }, 3000);
     }
 
     skewCanvas(){
