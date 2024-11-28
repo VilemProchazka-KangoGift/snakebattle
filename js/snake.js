@@ -64,6 +64,12 @@ class Snake {
             this.applyBoost(false);
         }       
         
+        let originalValues = {
+            prevX: this.prevX,
+            prevY: this.prevY,
+            x: this.x,
+            y: this.y
+        }
 
         // Store the current position before updating
         this.prevX = this.x;
@@ -73,8 +79,23 @@ class Snake {
         this.x += Math.cos(this.angle) * this.speed;
         this.y += Math.sin(this.angle) * this.speed;
 
+        let newValues = {
+            prevX: this.prevX,
+            prevY: this.prevY,
+            x: this.x,
+            y: this.y
+        }
+
         // Increase speed
         this.speed += this.speedIncrement;
+
+        if(this.checkIf180Turn(originalValues, newValues)){
+            this.prevX = originalValues.prevX;
+            this.prevY = originalValues.prevY;
+            this.x = originalValues.x;
+            this.y = originalValues.y;
+            return;
+        }
 
         // Create a new segment only if the snake has moved
         if (this.prevX !== this.x || this.prevY !== this.y) {
@@ -86,6 +107,34 @@ class Snake {
                 markedForDeletion: false
             });
         }        
+    }
+
+    // check for 180 degree change in direction - timing bug
+    checkIf180Turn(originalValues, newValues){
+        const getDirection = (prev, current) => {
+            if((!prev && prev !== 0) || (!current && current !== 0)){
+                return 0;
+            }
+
+            if(prev === current){
+                return 0;
+            }
+
+            (prev - current) < 0 ? -1 : 1
+        };
+
+        const prevXDirection = getDirection(originalValues.prevX, originalValues.x);
+        const prevYDirection = getDirection(originalValues.prevY, originalValues.y);
+        const currentXDirection = getDirection(newValues.prevX, newValues.x);
+        const currentYDirection = getDirection(newValues.prevY, newValues.y);
+
+
+        return prevXDirection !== currentXDirection 
+            && prevYDirection !== currentYDirection
+            && prevXDirection !== 0
+            && prevYDirection !== 0
+            && currentXDirection !== 0
+            && currentYDirection !== 0;
     }
 
     checkCollision() {

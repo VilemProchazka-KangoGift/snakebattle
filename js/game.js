@@ -308,7 +308,7 @@ class Game {
     generateApple() {
         if (!this.displayApples) return;
 
-        const maxAttempts = 100; // Prevent infinite loops
+        const maxAttempts = 50; // Prevent infinite loops
         let attempts = 0;
         let validPosition = false;
         let x, y;
