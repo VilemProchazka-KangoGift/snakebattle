@@ -92,8 +92,14 @@ class Apple {
         console.log("flip canvas side effect");   
         const canvas = document.getElementById("gameCanvas");
         canvas.classList.toggle("side-effect-flip")
-        setTimeout(() => game.gameFrozen = true, 50);        
-        setTimeout(() => game.gameFrozen = false, 1700);
+        setTimeout(() => {
+            game.gameFrozen = true;
+            game.stopGameTickInterval();
+        }, 50);        
+        setTimeout(() => {
+            game.gameFrozen = false;
+            game.startGameTickInterval();
+        }, 1700);
     }
 
     thinSnakes(game){
@@ -158,8 +164,14 @@ class Apple {
             isShuffleunique = players.every((value, index) => value.id !== playersShuffled[index].id)
         }
         game.aliveSnakes.forEach((s, i)=>s.player = playersShuffled[i]);
-        setTimeout(() => game.gameFrozen = true, 50);        
-        setTimeout(() => game.gameFrozen = false, 1700);
+        setTimeout(() => {
+            game.gameFrozen = true;
+            game.stopGameTickInterval();
+        }, 50);        
+        setTimeout(() => {
+            game.gameFrozen = false;
+            game.startGameTickInterval();
+        }, 1700);
     }
 
     startHallucinogenicBackground(){

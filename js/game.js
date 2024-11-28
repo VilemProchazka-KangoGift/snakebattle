@@ -228,8 +228,16 @@ class Game {
         }
         this.gameFrozen = false;
         this.updateScoreboard();
-        this.gameTickInterval = setInterval(() => this.gameTick(), 1000 / 60);
+        this.startGameTickInterval();
         this.playMusic();
+    }
+
+    stopGameTickInterval(){
+        clearInterval(this.gameTickInterval);
+    }
+
+    startGameTickInterval(){
+        this.gameTickInterval = setInterval(() => this.gameTick(), 1000 / 60);
     }
 
     gameTick() {
@@ -448,7 +456,7 @@ class Game {
     }
 
     endRound() {
-        clearInterval(this.gameTickInterval);
+        this.stopGameTickInterval();
         this.stopAppleTimer(); // Stop apple generation timer
 
         if(!this.disableCollisionPointGain){
@@ -487,7 +495,7 @@ class Game {
     }   
 
     postGameCleanup(){
-        clearInterval(this.gameTickInterval);
+        this.stopGameTickInterval();
         clearTimeout(this.roundTimeout); 
         this.stopAppleTimer();
         this.gameFrozen = false;        
